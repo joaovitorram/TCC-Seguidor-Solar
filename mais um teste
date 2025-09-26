@@ -6,12 +6,16 @@
 #define btnPin 4
 #define poten 34
 
+
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
 
-char ssid[] = "João Vitor";
-char pass[] = "JoaoVitor";
+//char ssid[] = "João Vitor";
+//char pass[] = "JoaoVitor";
+
+char ssid[] = "Sakaninha wifi";
+char pass[] = "sgzq3535";
 
 BlynkTimer timer; // Creating a timer object
 
@@ -70,7 +74,8 @@ void setup()
   // Setup a timer function to be called every second
   timer.setInterval(1000L, myTimerEvent);
   timer.setInterval(100L, leituraBtn);
-  timer.setInterval(100L, potenValue);
+  timer.setInterval(100L, leituraPoten);
+  Blynk.virtualWrite(V4, "Test");
 }
 
 void loop()
