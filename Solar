@@ -1,0 +1,3 @@
+#define BLYNK_TEMPLATE_ID "TMPL2J7cngmj8"
+#define BLYNK_TEMPLATE_NAME "Solar traker"
+#define BLYNK_AUTH_TOKEN "1qdH2QNzlCTbmP8b5mV6k3LX51o2GynA"
