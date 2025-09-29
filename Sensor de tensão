@@ -1,0 +1,41 @@
+// Pino ADC do ESP32
+#define ANALOG_IN_PIN 34  // escolha um pino ADC (ex: GPIO34, GPIO35, GPIO36, etc.)
+
+// Floats para cálculos
+float adc_voltage = 0.0;
+float in_voltage = 0.0;
+
+// Resistores do divisor (em ohms)
+// Se estiver usando o módulo pronto 0-25V (30k e 7k5):
+float R1 = 30000.0;  
+float R2 = 7500.0;   
+
+// Tensão de referência do ESP32 (3.3V)
+float ref_voltage = 3.3;
+
+// Variável para valor lido no ADC
+int adc_value = 0;
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+  Serial.println("Leitura de Tensão - Painel FV (ESP32)");
+}
+
+void loop() {
+  // Leitura ADC (0-4095 no ESP32)
+  adc_value = analogRead(ANALOG_IN_PIN);
+
+  // Converte para tensão no pino ADC
+  adc_voltage = (adc_value * ref_voltage) / 4095.0;
+
+  // Calcula tensão real na entrada (antes do divisor)
+  in_voltage = adc_voltage / (R2 / (R1 + R2));
+
+  // Exibe resultado
+  Serial.print("Tensão do Painel = ");
+  Serial.print(in_voltage, 2);
+  Serial.println(" V");
+
+  delay(1000); // leitura a cada 1s
+}
