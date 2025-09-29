@@ -1,0 +1,57 @@
+/* Código para ESP32 + ACS712 5A */
+/* Leitura de Corrente AC e cálculo RMS */
+
+int pinoSensor = 34;  // GPIO34 (entrada analógica do ESP32)
+
+int sensorValue_aux = 0;
+float valorSensor = 0;
+float valorCorrente = 0;
+
+// Conversão ADC ESP32: 3.3V / 4095 ≈ 0.0008058 V por unidade
+float voltsporUnidade = 3.3 / 4095.0;
+
+// Sensibilidade ACS712 5A → 185 mV/A
+float sensibilidade = 0.185;
+
+// Tensão da rede AC (nominal 127V)
+int tensao = 127;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(pinoSensor, INPUT);
+}
+
+void loop() {
+  valorSensor = 0;
+
+  // Faz 10.000 leituras para RMS
+  for(int i=10000; i>0; i--){
+    // Leitura do ADC (ajuste para ponto médio ≈ 2048)
+    sensorValue_aux = (analogRead(pinoSensor) - 2048); 
+    // Soma dos quadrados das leituras
+    valorSensor += pow(sensorValue_aux, 2); 
+    delayMicroseconds(100); // mais rápido que delay(1)
+  }
+
+  // RMS em Volts
+  valorSensor = (sqrt(valorSensor / 10000.0)) * voltsporUnidade; 
+  
+  // Corrente em Amperes
+  valorCorrente = (valorSensor / sensibilidade); 
+
+  // Tratamento para ruídos
+  if(valorCorrente <= 0.02){ // para ACS712 5A o ruído é menor
+    valorCorrente = 0; 
+  }
+
+  // Exibe no Serial
+  Serial.print("Corrente RMS: ");
+  Serial.print(valorCorrente, 3);
+  Serial.print(" A");
+
+  Serial.print(" | Potencia (Aparente): ");
+  Serial.print(valorCorrente * tensao);
+  Serial.println(" VA");
+
+  delay(500);
+}
