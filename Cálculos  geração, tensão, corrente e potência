@@ -1,0 +1,48 @@
+#define pinLeituracorrente 34
+float resistencia = 500.00;
+float corrente;
+float correntemAmper;
+float tensao = 5.00;
+float potencia;
+float eficiencia;
+float potenciamW;
+float potenciaPico = 1.25;
+int resistorShunt = 110;
+void setup()
+{
+  Serial.begin(115200);
+}
+
+void loop()
+{
+  calculoCorrenteTensaoPotencia();
+}
+
+void calculoCorrenteTensaoPotencia(){
+  float leituraCorrente = analogRead(pinLeituracorrente);
+  //Serial.println(leitura, 10);
+
+  float leituraCorrenteAjustada = (leituraCorrente * 3.3) / 4095.0;
+  
+  corrente = leituraCorrenteAjustada / resistorShunt;
+  correntemAmper = corrente * 1000;
+
+  potencia = tensao * corrente;
+  potenciamW = potencia * 1000;
+
+  eficiencia = (potencia/potenciaPico) * 100;
+
+  Serial.print("Corrente = ");
+  Serial.print(correntemAmper, 4);
+  Serial.print(" mA :");
+  Serial.print(" Tensão = ");
+  Serial.print(tensao, 4);
+  Serial.print(" V :");
+  Serial.print(" Potência = ");
+  Serial.print(potenciamW, 4);
+  Serial.print(" mW :");
+  Serial.print(" Eficiência = ");
+  Serial.print(eficiencia);
+  Serial.println(" %");
+  delay(500);
+}
