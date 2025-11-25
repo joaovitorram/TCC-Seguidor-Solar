@@ -1,0 +1,92 @@
+// Biblioteca do Servo motor no ESP32
+#include <ESP32Servo.h> 
+
+// Pinos e variaveis do Seguidor Solar
+int sensorSuperiorDireito = 33;
+int sensorSuperiorEsquerdo = 32;
+int sensorInferiorDireito = 35;
+int sensorInferiorEsquerdo= 36;
+
+Servo servox;  
+int posicaoX = 180;
+int limitiMaximoX = 175;
+int limitiMinimoX = 5;
+
+Servo servoy;
+int posicaoY = 45;
+int limitiMaximoY = 175;
+int limitiMinimoY = 5;
+
+void setup()
+{
+  Serial.begin(115200);
+  // Definição dos pinos dos Servos 
+  servox.attach(12);
+  servoy.attach(13);
+
+  // Posição inicial dos Servo
+  servox.write(180);
+  servoy.write(45);
+  delay(500);
+
+  
+}
+
+void loop()
+{
+  
+  seguidorSolar();
+  delay(10);
+ 
+}
+
+// Função do Seguidor Solar
+void seguidorSolar(){
+  int leituraSuperiorDireito = analogRead(sensorSuperiorDireito); 
+  int leituraSuperiorEsquerdo = analogRead(sensorSuperiorEsquerdo);
+  int leituraInferiorDireito = analogRead(sensorInferiorDireito);
+  int leituraInferiorEsquerdo = analogRead(sensorInferiorEsquerdo);
+
+  int tolerancia = 90;
+
+  int mediaSuperior = (leituraSuperiorDireito + leituraSuperiorEsquerdo) / 2;
+  int mediaInferior = (leituraInferiorDireito + leituraInferiorEsquerdo) / 2;
+
+  int mediaDireita = (leituraSuperiorDireito + leituraInferiorDireito) / 2;
+  int mediaEsquerda = (leituraSuperiorEsquerdo + leituraInferiorEsquerdo) / 2;
+
+  int diferencaSupInf = mediaSuperior - mediaInferior;
+  int diferencaDirEsq = mediaDireita - mediaEsquerda;
+
+  if(abs(diferencaSupInf) > tolerancia){
+    if(mediaSuperior > mediaInferior){
+      posicaoY = --posicaoY;
+      if(posicaoY < limitiMinimoY){
+        posicaoY = limitiMinimoY;
+      }
+    }
+    else /*if(mediaInferior > mediaSuperior)*/{
+      posicaoY = ++posicaoY;
+      if(posicaoY > limitiMaximoY){
+        posicaoY = limitiMaximoY;
+      }
+    }
+    servoy.write(posicaoY);
+  }
+
+  if(abs(diferencaDirEsq) > tolerancia){
+    if(mediaDireita > mediaEsquerda){
+      posicaoX = ++posicaoX;
+      if(posicaoX > limitiMaximoX){
+        posicaoX = posicaoX = limitiMaximoX;
+      }
+    }
+    else /*if(mediaEsquerda > mediaDireita)*/{
+      posicaoX = --posicaoX;
+      if(posicaoX <  limitiMinimoX){
+        posicaoX = posicaoX = limitiMinimoX;
+      }
+    }
+    servox.write(posicaoX);
+  }
+}
