@@ -78,13 +78,13 @@ void seguidorSolar(){
     if(mediaDireita > mediaEsquerda){
       posicaoX = ++posicaoX;
       if(posicaoX > limitiMaximoX){
-        posicaoX = posicaoX = limitiMaximoX;
+        posicaoX = limitiMaximoX;
       }
     }
     else /*if(mediaEsquerda > mediaDireita)*/{
       posicaoX = --posicaoX;
       if(posicaoX <  limitiMinimoX){
-        posicaoX = posicaoX = limitiMinimoX;
+        posicaoX = limitiMinimoX;
       }
     }
     servox.write(posicaoX);
