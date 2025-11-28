@@ -35,6 +35,12 @@ int sensorSuperiorEsquerdo = 32;
 int sensorInferiorDireito = 35;
 int sensorInferiorEsquerdo = 36;
 
+// VARIÁVEIS GLOBAIS PARA AS LEITURAS DOS SENSORES
+int leituraSuperiorDireito = 0; 
+int leituraSuperiorEsquerdo = 0;
+int leituraInferiorDireito = 0;
+int leituraInferiorEsquerdo = 0;
+
 /*Servo servox;  
 int posicaoX = 180;
 int limitiMaximoX = 175;
@@ -259,7 +265,7 @@ void loop()
 
 void conexaogoogleplanilhas(){
   if (WiFi.status() == WL_CONNECTED){
-    // Dados de exemplo - substitua pelos seus dados reais
+    // Agora usando as variáveis globais
     float dados[] = {leituraSuperiorDireito, leituraSuperiorEsquerdo, leituraInferiorDireito, leituraInferiorEsquerdo};
     escreverEmLista("ESP32", 4, dados);
   }
@@ -277,10 +283,11 @@ void conexaogoogleplanilhas(){
 
 // Função do Seguidor Solar
 void seguidorSolar(){
-  int leituraSuperiorDireito = analogRead(sensorSuperiorDireito); 
-  int leituraSuperiorEsquerdo = analogRead(sensorSuperiorEsquerdo);
-  int leituraInferiorDireito = analogRead(sensorInferiorDireito);
-  int leituraInferiorEsquerdo = analogRead(sensorInferiorEsquerdo);
+  // Atualiza as variáveis globais com as leituras dos sensores
+  leituraSuperiorDireito = analogRead(sensorSuperiorDireito); 
+  leituraSuperiorEsquerdo = analogRead(sensorSuperiorEsquerdo);
+  leituraInferiorDireito = analogRead(sensorInferiorDireito);
+  leituraInferiorEsquerdo = analogRead(sensorInferiorEsquerdo);
 
   /*int tolerancia = 90;
 
